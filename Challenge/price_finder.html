@@ -1,365 +1,733 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Price Finder</title>
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f6f8;
-            color: #111827;
-        }
-
-        .container {
-            width: 90%;
-            max-width: 1100px;
-            margin: 40px auto;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 35px;
-        }
-
-        .header h1 {
-            font-size: 38px;
-            margin-bottom: 10px;
-        }
-
-        .header p {
-            color: #6b7280;
-        }
-
-        .search-box {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            margin-bottom: 25px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
-        }
-
-        .search-box h2 {
-            font-size: 20px;
-            margin-bottom: 15px;
-        }
-
-        .row {
-            display: flex;
-            gap: 12px;
-        }
-
-        input {
-            width: 100%;
-            padding: 14px;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            font-size: 16px;
-            outline: none;
-        }
-
-        input:focus {
-            border-color: #111827;
-        }
-
-        button {
-            padding: 14px 22px;
-            border: none;
-            border-radius: 8px;
-            background: #111827;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-
-        button:hover {
-            background: #374151;
-        }
-
-        .title {
-            margin: 35px 0 20px;
-            font-size: 24px;
-        }
-
-        .products {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-        }
-
-        .card {
-            background: white;
-            padding: 22px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
-        }
-
-        .card h3 {
-            font-size: 20px;
-            margin-bottom: 15px;
-        }
-
-        .price {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 12px;
-        }
-
-        .brand {
-            color: #6b7280;
-            margin-bottom: 10px;
-        }
-
-        .rating {
-            margin-bottom: 18px;
-        }
-
-        .view {
-            width: 100%;
-        }
-
-        .empty {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            color: #6b7280;
-        }
-
-        @media (max-width: 800px) {
-            .products {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 550px) {
-            .header h1 {
-                font-size: 30px;
-            }
-
-            .row {
-                flex-direction: column;
-            }
-
-            button {
-                width: 100%;
-            }
-
-            .products {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Price Finder</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Arial,sans-serif;background:#f5f7fb;color:#111827}
+.container{width:92%;max-width:1150px;margin:40px auto}
+.header{text-align:center;margin-bottom:32px}
+.header h1{font-size:38px;margin-bottom:10px}
+.header p{color:#6b7280}
+.box{background:#fff;padding:24px;border-radius:16px;margin-bottom:24px;box-shadow:0 6px 24px rgba(0,0,0,.06)}
+.box h2{font-size:20px;margin-bottom:15px}
+.row{display:flex;gap:12px}
+input{width:100%;padding:14px;border:1px solid #d1d5db;border-radius:9px;font-size:16px;outline:none}
+input:focus{border-color:#111827}
+button{border:0;border-radius:9px;padding:14px 20px;background:#111827;color:#fff;font-weight:700;cursor:pointer;white-space:nowrap}
+button:hover{background:#374151}
+.title{margin:32px 0 18px}
+.products{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.card{background:#fff;padding:22px;border-radius:16px;box-shadow:0 6px 24px rgba(0,0,0,.06)}
+.card h3{font-size:19px;margin-bottom:12px}
+.price{font-size:23px;font-weight:700;margin-bottom:8px}
+.old{text-decoration:line-through;color:#9ca3af;font-size:14px;margin-left:7px}
+.brand{color:#6b7280;margin-bottom:8px}
+.rating{margin-bottom:6px}
+.stock{color:#16a34a;font-size:14px;margin-bottom:16px}
+.view{width:100%}
+.empty{background:#fff;padding:25px;border-radius:12px;color:#6b7280}
+.info{font-size:14px;color:#6b7280;margin-top:10px}
+@media(max-width:850px){.products{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.container{width:94%;margin:25px auto}.header h1{font-size:30px}.row{flex-direction:column}button{width:100%}.products{grid-template-columns:1fr}}
+</style>
 </head>
-
 <body>
+<div class="container">
+<div class="header">
+<h1>Smart Price Finder</h1>
+<p>Find products closest to your target price</p>
+</div>
 
-    <div class="container">
+<div class="box">
+<h2>Find products around</h2>
+<div class="row">
+<input type="number" id="price" placeholder="Enter target price">
+<button onclick="search()">Search</button>
+</div>
+<div class="info">Uses sorted prices and binary search to find nearby products efficiently.</div>
+</div>
 
-        <div class="header">
-            <h1>Smart Price Finder</h1>
-            <p>Find products closest to your target price</p>
-        </div>
+<div class="box">
+<h2>Find products in this range</h2>
+<div class="row">
+<input type="number" id="min" placeholder="Minimum price">
+<input type="number" id="max" placeholder="Maximum price">
+<button onclick="range()">Find Products</button>
+</div>
+</div>
 
-        <div class="search-box">
-            <h2>Find products around</h2>
+<h2 class="title" id="title">Products</h2>
+<div class="products" id="products"></div>
+</div>
 
-            <div class="row">
-                <input type="number" id="price" placeholder="Enter target price">
-                <button onclick="search()">Search</button>
+<script>
+const deliveryNetwork = {
+  locations: [
+    { id: "L1", name: "Main Warehouse" },
+    { id: "L2", name: "Sector 18" },
+    { id: "L3", name: "Pari Chowk" },
+    { id: "L4", name: "Knowledge Park" },
+    { id: "L5", name: "Greater Noida West" },
+    { id: "L6", name: "Noida Sector 62" },
+    { id: "L7", name: "Dadri" },
+    { id: "L8", name: "Alpha 1" }
+  ],
+
+  roads: [
+    { from: "L1", to: "L2", distance: 8 },
+    { from: "L1", to: "L3", distance: 5 },
+    { from: "L2", to: "L3", distance: 4 },
+    { from: "L2", to: "L4", distance: 6 },
+    { from: "L3", to: "L4", distance: 3 },
+    { from: "L3", to: "L5", distance: 7 },
+    { from: "L4", to: "L5", distance: 2 },
+    { from: "L4", to: "L6", distance: 9 },
+    { from: "L5", to: "L6", distance: 5 },
+    { from: "L5", to: "L7", distance: 8 },
+    { from: "L6", to: "L8", distance: 4 },
+    { from: "L7", to: "L8", distance: 6 }
+  ]
+};
+
+const storeData = {
+  storeName: "TechMart",
+
+  categories: [
+    {
+      id: "cat-1",
+      name: "Electronics",
+      description: "Electronic devices and accessories",
+
+      subcategories: [
+        {
+          id: "sub-1",
+          name: "Laptops",
+
+          products: [
+            {
+              id: "p-101",
+              name: "MacBook Air M3",
+              brand: "Apple",
+              price: 114999,
+              originalPrice: 129999,
+              rating: 4.8,
+              reviews: 1240,
+              stock: 12,
+              category: "Electronics",
+              subcategory: "Laptops",
+              tags: ["laptop", "apple", "macbook", "m3"],
+              specifications: {
+                processor: "Apple M3",
+                ram: "16GB",
+                storage: "512GB SSD",
+                display: "13.6 inch",
+                operatingSystem: "macOS"
+              }
+            },
+
+            {
+              id: "p-102",
+              name: "Dell Inspiron 14",
+              brand: "Dell",
+              price: 68999,
+              originalPrice: 74999,
+              rating: 4.4,
+              reviews: 856,
+              stock: 18,
+              category: "Electronics",
+              subcategory: "Laptops",
+              tags: ["laptop", "dell", "inspiron"],
+              specifications: {
+                processor: "Intel Core i5",
+                ram: "16GB",
+                storage: "512GB SSD",
+                display: "14 inch",
+                operatingSystem: "Windows 11"
+              }
+            },
+
+            {
+              id: "p-103",
+              name: "HP Pavilion 15",
+              brand: "HP",
+              price: 64999,
+              originalPrice: 71999,
+              rating: 4.3,
+              reviews: 634,
+              stock: 7,
+              category: "Electronics",
+              subcategory: "Laptops",
+              tags: ["laptop", "hp", "pavilion"],
+              specifications: {
+                processor: "Intel Core i5",
+                ram: "16GB",
+                storage: "512GB SSD",
+                display: "15.6 inch",
+                operatingSystem: "Windows 11"
+              }
+            },
+
+            {
+              id: "p-104",
+              name: "Lenovo ThinkPad E14",
+              brand: "Lenovo",
+              price: 72999,
+              originalPrice: 79999,
+              rating: 4.6,
+              reviews: 923,
+              stock: 5,
+              category: "Electronics",
+              subcategory: "Laptops",
+              tags: ["laptop", "lenovo", "thinkpad"],
+              specifications: {
+                processor: "Intel Core i7",
+                ram: "16GB",
+                storage: "1TB SSD",
+                display: "14 inch",
+                operatingSystem: "Windows 11"
+              }
+            },
+
+            {
+              id: "p-105",
+              name: "ASUS ROG Gaming Laptop",
+              brand: "ASUS",
+              price: 124999,
+              originalPrice: 139999,
+              rating: 4.7,
+              reviews: 412,
+              stock: 4,
+              category: "Electronics",
+              subcategory: "Laptops",
+              tags: ["laptop", "asus", "gaming", "rog"],
+              specifications: {
+                processor: "AMD Ryzen 9",
+                ram: "32GB",
+                storage: "1TB SSD",
+                display: "15.6 inch",
+                operatingSystem: "Windows 11"
+              }
+            }
+          ]
+        },
+
+        {
+          id: "sub-2",
+          name: "Mobiles",
+
+          products: [
+            {
+              id: "p-201",
+              name: "iPhone 16",
+              brand: "Apple",
+              price: 79999,
+              originalPrice: 84999,
+              rating: 4.7,
+              reviews: 2100,
+              stock: 15,
+              category: "Electronics",
+              subcategory: "Mobiles",
+              tags: ["phone", "iphone", "apple", "ios"],
+              specifications: {
+                processor: "Apple A18",
+                ram: "8GB",
+                storage: "128GB",
+                display: "6.1 inch",
+                operatingSystem: "iOS"
+              }
+            },
+
+            {
+              id: "p-202",
+              name: "Samsung Galaxy S25",
+              brand: "Samsung",
+              price: 74999,
+              originalPrice: 81999,
+              rating: 4.6,
+              reviews: 1680,
+              stock: 10,
+              category: "Electronics",
+              subcategory: "Mobiles",
+              tags: ["phone", "samsung", "galaxy", "android"],
+              specifications: {
+                processor: "Snapdragon",
+                ram: "12GB",
+                storage: "256GB",
+                display: "6.2 inch",
+                operatingSystem: "Android"
+              }
+            },
+
+            {
+              id: "p-203",
+              name: "Google Pixel 9",
+              brand: "Google",
+              price: 69999,
+              originalPrice: 74999,
+              rating: 4.5,
+              reviews: 980,
+              stock: 8,
+              category: "Electronics",
+              subcategory: "Mobiles",
+              tags: ["phone", "pixel", "google", "android"],
+              specifications: {
+                processor: "Google Tensor G4",
+                ram: "12GB",
+                storage: "256GB",
+                display: "6.3 inch",
+                operatingSystem: "Android"
+              }
+            },
+
+            {
+              id: "p-204",
+              name: "OnePlus 13",
+              brand: "OnePlus",
+              price: 64999,
+              originalPrice: 69999,
+              rating: 4.4,
+              reviews: 1340,
+              stock: 20,
+              category: "Electronics",
+              subcategory: "Mobiles",
+              tags: ["phone", "oneplus", "android"],
+              specifications: {
+                processor: "Snapdragon 8 Elite",
+                ram: "16GB",
+                storage: "512GB",
+                display: "6.82 inch",
+                operatingSystem: "Android"
+              }
+            }
+          ]
+        },
+
+        {
+          id: "sub-3",
+          name: "Accessories",
+
+          products: [
+            {
+              id: "p-301",
+              name: "Logitech MX Master 3S",
+              brand: "Logitech",
+              price: 7495,
+              originalPrice: 8995,
+              rating: 4.7,
+              reviews: 3210,
+              stock: 30,
+              category: "Electronics",
+              subcategory: "Accessories",
+              tags: ["mouse", "wireless", "logitech"],
+              specifications: {
+                connectivity: "Bluetooth",
+                battery: "70 days",
+                type: "Wireless Mouse"
+              }
+            },
+
+            {
+              id: "p-302",
+              name: "Keychron K2 Mechanical Keyboard",
+              brand: "Keychron",
+              price: 8999,
+              originalPrice: 9999,
+              rating: 4.6,
+              reviews: 876,
+              stock: 14,
+              category: "Electronics",
+              subcategory: "Accessories",
+              tags: ["keyboard", "mechanical", "keychron"],
+              specifications: {
+                connectivity: "Bluetooth + USB-C",
+                switches: "Gateron",
+                type: "Mechanical Keyboard"
+              }
+            },
+
+            {
+              id: "p-303",
+              name: "Sony WH-1000XM5",
+              brand: "Sony",
+              price: 29990,
+              originalPrice: 34990,
+              rating: 4.8,
+              reviews: 5420,
+              stock: 9,
+              category: "Electronics",
+              subcategory: "Accessories",
+              tags: ["headphones", "sony", "wireless", "audio"],
+              specifications: {
+                connectivity: "Bluetooth",
+                battery: "30 hours",
+                type: "Noise Cancelling Headphones"
+              }
+            },
+
+            {
+              id: "p-304",
+              name: "Anker 65W GaN Charger",
+              brand: "Anker",
+              price: 3999,
+              originalPrice: 4999,
+              rating: 4.5,
+              reviews: 2130,
+              stock: 25,
+              category: "Electronics",
+              subcategory: "Accessories",
+              tags: ["charger", "gan", "usb-c", "anker"],
+              specifications: {
+                power: "65W",
+                ports: "3",
+                type: "GaN Charger"
+              }
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      id: "cat-2",
+      name: "Books",
+      description: "Programming and technology books",
+
+      subcategories: [
+        {
+          id: "sub-4",
+          name: "Programming",
+
+          products: [
+            {
+              id: "p-401",
+              name: "JavaScript: The Definitive Guide",
+              brand: "O'Reilly",
+              price: 899,
+              originalPrice: 1199,
+              rating: 4.7,
+              reviews: 1870,
+              stock: 25,
+              category: "Books",
+              subcategory: "Programming",
+              tags: ["javascript", "programming", "web"],
+              specifications: {
+                author: "David Flanagan",
+                pages: 704,
+                language: "English"
+              }
+            },
+
+            {
+              id: "p-402",
+              name: "You Don't Know JS Yet",
+              brand: "O'Reilly",
+              price: 699,
+              originalPrice: 899,
+              rating: 4.8,
+              reviews: 2340,
+              stock: 18,
+              category: "Books",
+              subcategory: "Programming",
+              tags: ["javascript", "js", "programming"],
+              specifications: {
+                author: "Kyle Simpson",
+                pages: 278,
+                language: "English"
+              }
+            },
+
+            {
+              id: "p-403",
+              name: "Clean Code",
+              brand: "Pearson",
+              price: 799,
+              originalPrice: 999,
+              rating: 4.6,
+              reviews: 4320,
+              stock: 20,
+              category: "Books",
+              subcategory: "Programming",
+              tags: ["clean-code", "software", "programming"],
+              specifications: {
+                author: "Robert C. Martin",
+                pages: 464,
+                language: "English"
+              }
+            },
+
+            {
+              id: "p-404",
+              name: "Designing Data-Intensive Applications",
+              brand: "O'Reilly",
+              price: 1299,
+              originalPrice: 1599,
+              rating: 4.9,
+              reviews: 5670,
+              stock: 11,
+              category: "Books",
+              subcategory: "Programming",
+              tags: ["system-design", "database", "distributed-systems"],
+              specifications: {
+                author: "Martin Kleppmann",
+                pages: 616,
+                language: "English"
+              }
+            }
+          ]
+        },
+
+        {
+          id: "sub-5",
+          name: "DSA",
+
+          products: [
+            {
+              id: "p-501",
+              name: "Introduction to Algorithms",
+              brand: "MIT Press",
+              price: 1599,
+              originalPrice: 1899,
+              rating: 4.8,
+              reviews: 3200,
+              stock: 8,
+              category: "Books",
+              subcategory: "DSA",
+              tags: ["dsa", "algorithms", "data-structures"],
+              specifications: {
+                author: "Cormen",
+                pages: 1312,
+                language: "English"
+              }
+            },
+
+            {
+              id: "p-502",
+              name: "Cracking the Coding Interview",
+              brand: "CareerCup",
+              price: 999,
+              originalPrice: 1299,
+              rating: 4.7,
+              reviews: 2870,
+              stock: 13,
+              category: "Books",
+              subcategory: "DSA",
+              tags: ["dsa", "interview", "coding"],
+              specifications: {
+                author: "Gayle Laakmann McDowell",
+                pages: 708,
+                language: "English"
+              }
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      id: "cat-3",
+      name: "Gaming",
+      description: "Gaming hardware and accessories",
+
+      subcategories: [
+        {
+          id: "sub-6",
+          name: "Gaming Accessories",
+
+          products: [
+            {
+              id: "p-601",
+              name: "Razer DeathAdder V3",
+              brand: "Razer",
+              price: 6999,
+              originalPrice: 7999,
+              rating: 4.6,
+              reviews: 1450,
+              stock: 17,
+              category: "Gaming",
+              subcategory: "Gaming Accessories",
+              tags: ["gaming", "mouse", "razer"],
+              specifications: {
+                dpi: "30000",
+                connectivity: "USB",
+                type: "Gaming Mouse"
+              }
+            },
+
+            {
+              id: "p-602",
+              name: "Logitech G Pro X Keyboard",
+              brand: "Logitech",
+              price: 11999,
+              originalPrice: 13999,
+              rating: 4.7,
+              reviews: 920,
+              stock: 6,
+              category: "Gaming",
+              subcategory: "Gaming Accessories",
+              tags: ["gaming", "keyboard", "mechanical"],
+              specifications: {
+                switches: "GX Mechanical",
+                connectivity: "Wireless",
+                type: "Gaming Keyboard"
+              }
+            },
+
+            {
+              id: "p-603",
+              name: "HyperX Cloud III",
+              brand: "HyperX",
+              price: 8999,
+              originalPrice: 9999,
+              rating: 4.5,
+              reviews: 1100,
+              stock: 12,
+              category: "Gaming",
+              subcategory: "Gaming Accessories",
+              tags: ["gaming", "headset", "hyperx"],
+              specifications: {
+                connectivity: "USB",
+                microphone: "Detachable",
+                type: "Gaming Headset"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+let data = [];
+
+for(let i=0;i<storeData.categories.length;i++){
+    for(let j=0;j<storeData.categories[i].subcategories.length;j++){
+        let p=storeData.categories[i].subcategories[j].products;
+        for(let k=0;k<p.length;k++) data.push(p[k]);
+    }
+}
+
+data.sort(function(a,b){return a.price-b.price});
+
+function find(x){
+    let l=0,r=data.length;
+    while(l<r){
+        let m=Math.floor((l+r)/2);
+        if(data[m].price<x) l=m+1;
+        else r=m;
+    }
+    return l;
+}
+
+function search(){
+    let x=Number(document.getElementById("price").value);
+    if(!x){
+        alert("Please enter a price");
+        return;
+    }
+
+    let i=find(x);
+    let result=[];
+
+    if(i>0) result.push(data[i-1]);
+    if(i<data.length) result.push(data[i]);
+    if(i+1<data.length) result.push(data[i+1]);
+
+    let seen={};
+    result=result.filter(function(a){
+        if(seen[a.id]) return false;
+        seen[a.id]=true;
+        return true;
+    });
+
+    result.sort(function(a,b){
+        return Math.abs(a.price-x)-Math.abs(b.price-x);
+    });
+
+    document.getElementById("title").textContent="Closest Products";
+    show(result);
+}
+
+function range(){
+    let min=Number(document.getElementById("min").value);
+    let max=Number(document.getElementById("max").value);
+
+    if(!min || !max || min>max){
+        alert("Please enter a valid price range");
+        return;
+    }
+
+    let start=find(min);
+    let end=find(max);
+    let result=[];
+
+    for(let i=start;i<data.length && i<end;i++){
+        if(data[i].price<=max) result.push(data[i]);
+    }
+
+    if(start<data.length && data[start].price===max) result.push(data[start]);
+
+    let seen={};
+    result=result.filter(function(a){
+        if(seen[a.id]) return false;
+        seen[a.id]=true;
+        return true;
+    });
+
+    document.getElementById("title").textContent="Products in Range";
+    show(result);
+}
+
+function show(result){
+    let box=document.getElementById("products");
+    box.innerHTML="";
+
+    if(result.length===0){
+        box.innerHTML='<div class="empty">No products found.</div>';
+        return;
+    }
+
+    for(let i=0;i<result.length;i++){
+        let p=result[i];
+
+        box.innerHTML+=`
+        <div class="card">
+            <h3>${p.name}</h3>
+            <div class="price">
+                ₹${p.price.toLocaleString("en-IN")}
+                <span class="old">₹${p.originalPrice.toLocaleString("en-IN")}</span>
             </div>
-        </div>
+            <div class="brand">Brand: ${p.brand}</div>
+            <div class="rating">⭐ ${p.rating} (${p.reviews.toLocaleString("en-IN")} reviews)</div>
+            <div class="stock">${p.stock} in stock</div>
+            <button class="view" onclick="view('${p.id}')">View Product</button>
+        </div>`;
+    }
+}
 
-        <div class="search-box">
-            <h2>Find products in this range</h2>
+function view(id){
+    let p=data.find(function(a){return a.id===id});
+    if(!p) return;
 
-            <div class="row">
-                <input type="number" id="min" placeholder="Minimum price">
-                <input type="number" id="max" placeholder="Maximum price">
-                <button onclick="range()">Find Products</button>
-            </div>
-        </div>
+    let s="";
+    for(let k in p.specifications){
+        s+=k+": "+p.specifications[k]+"\n";
+    }
 
-        <h2 class="title">Products</h2>
+    alert(
+        p.name+"\n\n"+
+        "Brand: "+p.brand+"\n"+
+        "Price: ₹"+p.price.toLocaleString("en-IN")+"\n"+
+        "Rating: "+p.rating+"\n"+
+        "Reviews: "+p.reviews+"\n"+
+        "Stock: "+p.stock+"\n\n"+
+        s
+    );
+}
 
-        <div class="products" id="products"></div>
-
-    </div>
-
-    <script>
-        let data = [
-            {
-                name: "Redmi Note 13",
-                price: 15999,
-                brand: "Xiaomi",
-                rating: 4.2
-            },
-            {
-                name: "Samsung Galaxy A55",
-                price: 32999,
-                brand: "Samsung",
-                rating: 4.4
-            },
-            {
-                name: "OnePlus 12",
-                price: 64999,
-                brand: "OnePlus",
-                rating: 4.5
-            },
-            {
-                name: "HP Pavilion 15",
-                price: 65999,
-                brand: "HP",
-                rating: 4.3
-            },
-            {
-                name: "Dell Inspiron 14",
-                price: 68999,
-                brand: "Dell",
-                rating: 4.3
-            },
-            {
-                name: "Google Pixel 9",
-                price: 69999,
-                brand: "Google",
-                rating: 4.5
-            },
-            {
-                name: "Lenovo ThinkPad E14",
-                price: 72999,
-                brand: "Lenovo",
-                rating: 4.4
-            },
-            {
-                name: "iPhone 16",
-                price: 79999,
-                brand: "Apple",
-                rating: 4.7
-            },
-            {
-                name: "MacBook Air",
-                price: 99999,
-                brand: "Apple",
-                rating: 4.8
-            }
-        ];
-
-        data.sort(function(a, b) {
-            return a.price - b.price;
-        });
-
-        function find(x) {
-            let l = 0;
-            let r = data.length - 1;
-
-            while (l <= r) {
-                let m = Math.floor((l + r) / 2);
-
-                if (data[m].price === x) {
-                    return m;
-                }
-
-                if (data[m].price < x) {
-                    l = m + 1;
-                } else {
-                    r = m - 1;
-                }
-            }
-
-            return l;
-        }
-
-        function search() {
-            let x = Number(document.getElementById("price").value);
-
-            if (!x) {
-                alert("Please enter a price");
-                return;
-            }
-
-            let i = find(x);
-            let result = [];
-
-            if (i > 0) {
-                result.push(data[i - 1]);
-            }
-
-            if (i < data.length) {
-                result.push(data[i]);
-            }
-
-            if (i + 1 < data.length) {
-                result.push(data[i + 1]);
-            }
-
-            result.sort(function(a, b) {
-                return Math.abs(a.price - x) - Math.abs(b.price - x);
-            });
-
-            show(result);
-        }
-
-        function range() {
-            let min = Number(document.getElementById("min").value);
-            let max = Number(document.getElementById("max").value);
-
-            if (!min || !max || min > max) {
-                alert("Please enter a valid price range");
-                return;
-            }
-
-            let start = find(min);
-            let result = [];
-
-            for (let i = start; i < data.length; i++) {
-                if (data[i].price > max) {
-                    break;
-                }
-
-                result.push(data[i]);
-            }
-
-            show(result);
-        }
-
-        function show(result) {
-            let box = document.getElementById("products");
-
-            box.innerHTML = "";
-
-            if (result.length === 0) {
-                box.innerHTML = '<div class="empty">No products found.</div>';
-                return;
-            }
-
-            for (let i = 0; i < result.length; i++) {
-                box.innerHTML += `
-                    <div class="card">
-                        <h3>${result[i].name}</h3>
-                        <div class="price">₹${result[i].price.toLocaleString("en-IN")}</div>
-                        <div class="brand">Brand: ${result[i].brand}</div>
-                        <div class="rating">⭐ ${result[i].rating}</div>
-                        <button class="view" onclick="view('${result[i].name}')">
-                            View Product
-                        </button>
-                    </div>
-                `;
-            }
-        }
-
-        function view(name) {
-            alert("You selected " + name);
-        }
-
-        show(data);
-    </script>
-
+show(data);
+</script>
 </body>
 </html>
