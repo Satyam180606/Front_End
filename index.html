@@ -1,0 +1,85 @@
+<html>
+
+<head>
+    <title> Dynamic list</title>
+
+</head>
+
+<body>
+
+
+    <div id="app"></div>
+
+    <script>
+        let menu = [
+            {
+                name: "FrontEnd",
+                children: [{
+                    name: "html"
+                },
+                {
+                    name: "CSS"
+                },
+                {
+                    name: "Javascript",
+                    children: [
+                        { name: "variables" },
+                        { name: "datatypes" },
+                        {
+                            name: "operators",
+                            children: [
+                                { name: "arithmetic" },
+                                { name: "logical" },
+                                { name: "comparison" }
+                            ]
+                        }
+                    ]
+                }]
+            },
+            {
+                name: "Backend",
+                children: [
+                    { name: "node" },
+                    { name: "express" },
+                    { name: "mongodb" }
+                ]
+            }
+        ]
+
+        const createList = (items) => {
+            let ul = document.createElement('ul');
+
+            for (const item of items) {
+                let li = document.createElement('li');
+                li.textContent = item.name;
+
+                if (item.children) {
+                    const childList = createList(item.children);
+                    li.appendChild(childList);
+                }
+
+                ul.appendChild(li);
+            }
+            return ul;
+        }
+        const depth = (items) => {
+            let dep = 0;
+            for(const item of items) {
+                if (item.children) {
+                    const childDepth = depth(item.children);
+                    if (childDepth > dep) {
+                        dep = childDepth;
+                    }
+                }
+            }
+            return dep + 1;
+        }
+        const maxDepth = depth(menu);
+        document.getElementById('app').innerHTML = `<h4>Max Depth: ${maxDepth}</h4>`;
+        const div1 = createList(menu);
+        document.querySelector('#app').appendChild(div1);
+
+    </script>
+</body>
+
+</html>
