@@ -1,14 +1,54 @@
 import { Snake } from './snake.js';
+
+const createFood = (snakeBody, rows, columns) => {
+    let food;
+
+    do {
+        food = {
+            x: Math.floor(Math.random() * columns),
+            y: Math.floor(Math.random() * rows)
+        };
+    } while (
+        snakeBody.some(
+            segment => segment.x === food.x && segment.y === food.y
+        )
+    );
+
+    return food;
+};
+
 export class Game {
     constructor() {
         this.rows = 20;
         this.columns = 20;
         this.snake = new Snake();
-        this.speed = 150;
+        this.speed = 350;
         this.direction = "RIGHT";
         this.nextDirection = "RIGHT";
         this.running = true;
-    }    
+
+        this.food = createFood(
+            this.snake.getBody(),
+            this.rows,
+            this.columns
+        );
+    }
+
+    setDirection(direction) {
+        const opposite = {
+            UP: "DOWN",
+            DOWN: "UP",
+            LEFT: "RIGHT",
+            RIGHT: "LEFT"
+        };
+
+        if (opposite[this.direction] === direction) {
+            return;
+        }
+
+        this.nextDirection = direction;
+    }
+
     update() {
         if (this.running === false) return;
         this.direction = this.nextDirection;
@@ -20,14 +60,10 @@ export class Game {
         };
         const head = this.snake.getHead();
         const newHead = {
-            x:
-                head.x +
-                movement[this.direction].x,
-            y:
-                head.y +
-                movement[this.direction].y
+            x: head.x + movement[this.direction].x,
+            y: head.y + movement[this.direction].y
         };
-           this.snake.move(newHead);
-           this.snake.removeTail();
+        this.snake.move(newHead);
+        this.snake.removeTail();
     }
 }
